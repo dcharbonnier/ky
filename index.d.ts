@@ -299,9 +299,16 @@ declare const ky: {
 	head(url: Input, options?: Options): ResponsePromise;
 
 	/**
-	Create a new Ky instance with complete new defaults.
+	 Update the instance with new defaults.
 
-	@returns A new Ky instance.
+	 @returns void.
+	*/
+	update(defaultOptions: Options): typeof ky;
+
+	/**
+	 Create a new Ky instance with complete new defaults.
+
+	 @returns A new Ky instance.
 	*/
 	create(defaultOptions: Options): typeof ky;
 

@@ -432,24 +432,38 @@ class Ky {
 }
 
 const validateAndMerge = (...sources) => {
+	validate(...sources);
+
+	return deepMerge({}, ...sources);
+};
+
+const validate = (...sources) => {
 	for (const source of sources) {
 		if ((!isObject(source) || Array.isArray(source)) && typeof source !== 'undefined') {
 			throw new TypeError('The `options` argument must be an object');
 		}
 	}
 
-	return deepMerge({}, ...sources);
+	return sources;
 };
 
 const createInstance = defaults => {
-	const ky = (input, options) => new Ky(input, validateAndMerge(defaults, options));
-
-	for (const method of requestMethods) {
-		ky[method] = (input, options) => new Ky(input, validateAndMerge(defaults, options, {method}));
+	if (typeof defaults === 'undefined') {
+		defaults = [];
 	}
 
-	ky.create = newDefaults => createInstance(validateAndMerge(newDefaults));
-	ky.extend = newDefaults => createInstance(validateAndMerge(defaults, newDefaults));
+	const ky = (input, options) => new Ky(input, validateAndMerge(...defaults, options));
+
+	for (const method of requestMethods) {
+		ky[method] = (input, options) => new Ky(input, validateAndMerge(...defaults, options, {method}));
+	}
+
+	ky.update = newDefaults => {
+		defaults.push(newDefaults);
+	};
+
+	ky.create = newDefaults => createInstance(validate(newDefaults));
+	ky.extend = newDefaults => createInstance([...defaults, ...validate(newDefaults)]);
 
 	return ky;
 };
