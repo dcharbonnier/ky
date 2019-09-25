@@ -467,7 +467,7 @@ const createInstance = (defaults, parentDefaults) => {
 	}
 
 	ky.update = newDefaults => {
-		defaults.push(newDefaults);
+		defaults.splice(0, 0, newDefaults);
 	};
 
 	ky.create = newDefaults => createInstance(validate(newDefaults));
