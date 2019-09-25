@@ -460,10 +460,10 @@ const createInstance = (defaults, parentDefaults) => {
 		defaults = [defaults];
 	}
 
-	const ky = (input, options) => new Ky(input, validateAndMerge(...[defaults, parentDefaults].flat(Number.MAX_SAFE_INTEGER), options));
+	const ky = (input, options) => new Ky(input, validateAndMerge(options, ...[defaults, parentDefaults].flat(Number.MAX_SAFE_INTEGER)));
 
 	for (const method of requestMethods) {
-		ky[method] = (input, options) => new Ky(input, validateAndMerge(...[defaults, parentDefaults].flat(Number.MAX_SAFE_INTEGER), options, {method}));
+		ky[method] = (input, options) => new Ky(input, validateAndMerge({method}, options, ...[defaults, parentDefaults].flat(Number.MAX_SAFE_INTEGER)));
 	}
 
 	ky.update = newDefaults => {
