@@ -434,7 +434,7 @@ class Ky {
 const validateAndMerge = (...sources) => {
 	validate(...sources);
 
-	return deepMerge({}, ...sources);
+	return deepMerge({}, ...sources.reverse());
 };
 
 const validate = (...sources) => {
@@ -471,7 +471,7 @@ const createInstance = (defaults, parentDefaults) => {
 	};
 
 	ky.create = newDefaults => createInstance(validate(newDefaults));
-	ky.extend = newDefaults => createInstance([defaults, parentDefaults], validate(newDefaults));
+	ky.extend = newDefaults => createInstance(validate(newDefaults), [defaults, parentDefaults]);
 
 	return ky;
 };
