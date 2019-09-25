@@ -447,15 +447,23 @@ const validate = (...sources) => {
 	return sources;
 };
 
-const createInstance = defaults => {
+const createInstance = (defaults, parentDefaults) => {
+	if (typeof parentDefaults === 'undefined') {
+		parentDefaults = [];
+	}
+
 	if (typeof defaults === 'undefined') {
 		defaults = [];
 	}
 
-	const ky = (input, options) => new Ky(input, validateAndMerge(...defaults, options));
+	if (!Array.isArray(defaults)) {
+		defaults = [defaults];
+	}
+
+	const ky = (input, options) => new Ky(input, validateAndMerge(...[defaults, parentDefaults].flat(Number.MAX_SAFE_INTEGER), options));
 
 	for (const method of requestMethods) {
-		ky[method] = (input, options) => new Ky(input, validateAndMerge(...defaults, options, {method}));
+		ky[method] = (input, options) => new Ky(input, validateAndMerge(...[defaults, parentDefaults].flat(Number.MAX_SAFE_INTEGER), options, {method}));
 	}
 
 	ky.update = newDefaults => {
@@ -463,7 +471,7 @@ const createInstance = defaults => {
 	};
 
 	ky.create = newDefaults => createInstance(validate(newDefaults));
-	ky.extend = newDefaults => createInstance([...defaults, ...validate(newDefaults)]);
+	ky.extend = newDefaults => createInstance(validate(newDefaults), [defaults, parentDefaults]);
 
 	return ky;
 };
