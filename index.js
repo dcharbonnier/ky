@@ -471,7 +471,7 @@ const createInstance = (defaults, parentDefaults) => {
 	};
 
 	ky.create = newDefaults => createInstance(validate(newDefaults));
-	ky.extend = newDefaults => createInstance(validate(newDefaults), [defaults, parentDefaults]);
+	ky.extend = newDefaults => createInstance([defaults, parentDefaults], validate(newDefaults));
 
 	return ky;
 };
