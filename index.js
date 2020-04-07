@@ -285,7 +285,7 @@ class Ky {
 				const modifiedResponse = await hook(
 					this._input,
 					this._options,
-					response.clone()
+					response
 				);
 
 				if (modifiedResponse instanceof Response) {
@@ -308,7 +308,7 @@ class Ky {
 					throw new Error('Streams are not supported in your environment. `ReadableStream` is missing.');
 				}
 
-				return this._stream(response.clone(), this._options.onDownloadProgress);
+				return this._stream(response, this._options.onDownloadProgress);
 			}
 
 			return response;
@@ -320,7 +320,7 @@ class Ky {
 		for (const [type, mimeType] of Object.entries(responseTypes)) {
 			result[type] = async () => {
 				headers.set('accept', mimeType);
-				return (await result).clone()[type]();
+				return (await result)[type]();
 			};
 		}
 
